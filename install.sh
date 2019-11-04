@@ -5,7 +5,7 @@ if [[ -h ~/.wtf ]]; then
 	echo "Symlink already exists - leaving as is."
 else
 	echo "Creating symlink ~/.wtf"
-	ln -s wtf.sh ~/.wtf
+	ln -s $PWD/wtf.sh ~/.wtf
 fi
 
 if $(fgrep -q "source ~/.wtf" ~/.bashrc); then
