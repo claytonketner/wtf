@@ -19,7 +19,7 @@ Your editor of choice will open and you can write your notes. Then you can view 
 wtf
 ```
 
-If `mkwtf` opens a spooky editor, that means your `EDITOR` environment variable isn't set properly. Find and fix (or add) this line in your ~/.bash_profile:
+If `mkwtf` or `editwtf` (`ewtf`) opens a spooky editor, that means your `EDITOR` environment variable isn't set properly. Find and fix (or add) this line in your ~/.bash_profile:
 ```
 export EDITOR=subl  # This will make you edit using sublime text
 ```

@@ -10,32 +10,22 @@
 
 function _get_wtf_file {
 	# Convenience function for getting the path to the wtf file for the pwd
+	best_match=""
+	best_match_file=""
 	for file in `find ~/wtfs -type f`; do
 		first_line=`head -n 1 $file`
+		# Find the deepest match
 		if [[ "$PWD" = "$first_line"* ]]; then
-			# Match!
-			echo $file
-			return 0
+			if [[ ${#first_line} > ${#best_match} ]]; then
+				best_match="$first_line"
+				best_match_file="$file"
+			fi
 		fi
 	done
-	echo ""
-	return 1
-}
-function mkwtf {
-	# Creates a new wtf file for the current directory
-	current_dir=${PWD##*/}  # Current dir w/o full path
-	# Replace slashes with underscores
-	filename=$(echo $current_dir | sed -e "s/\//_/g")
-	filepath=~/wtfs/$filename
-	if [[ -f $filepath ]]; then
-		echo "$filepath already exists!"
-		echo "Aborting"
+	echo $best_match_file
+	if [[ $best_match_file = "" ]]; then
 		return 1
 	else
-		touch $filepath
-		echo "$PWD" > $filepath
-		echo -e "---\nPut your help text below\n---\n\n" >> $filepath
-		echo "Created $filepath - go edit it (try \`editwtf\` or \`ewtf\`)!"
 		return 0
 	fi
 }
@@ -50,6 +40,23 @@ function editwtf {
 	fi
 }
 alias ewtf=editwtf
+function mkwtf {
+	# Creates a new wtf file for the current directory
+	filename=$(echo $PWD | sed -e "s/\//_/g")
+	filepath=~/wtfs/$filename
+	if [[ -f $filepath ]]; then
+		echo "$filepath already exists!"
+		echo "Aborting"
+		return 1
+	else
+		touch $filepath
+		echo "$PWD" > $filepath
+		echo -e "---\nPut your help text below\n---\n" >> $filepath
+		echo "Created $filepath. Opening it for editing..."
+		editwtf
+		return 0
+	fi
+}
 function wtf {
 	# Looks up a help file from ~/wtfs
 	wtf_file=$(_get_wtf_file)
