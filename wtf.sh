@@ -24,16 +24,18 @@ function _get_wtf_file {
 function mkwtf {
 	# Creates a new wtf file for the current directory
 	current_dir=${PWD##*/}  # Current dir w/o full path
-	new_filename=~/wtfs/$current_dir
-	if [[ -f $new_filename ]]; then
-		echo "$new_filename already exists!"
+	# Replace slashes with underscores
+	filename=$(echo $current_dir | sed -e "s/\//_/g")
+	filepath=~/wtfs/$filename
+	if [[ -f $filepath ]]; then
+		echo "$filepath already exists!"
 		echo "Aborting"
 		return 1
 	else
-		touch $new_filename
-		echo "$PWD" > $new_filename
-		echo -e "---\nPut your help text below\n---\n\n" >> $new_filename
-		echo "Created $new_filename - go edit it (try \`editwtf\`)!"
+		touch $filepath
+		echo "$PWD" > $filepath
+		echo -e "---\nPut your help text below\n---\n\n" >> $filepath
+		echo "Created $filepath - go edit it (try \`editwtf\` or \`ewtf\`)!"
 		return 0
 	fi
 }
@@ -50,7 +52,7 @@ function editwtf {
 alias ewtf=editwtf
 function wtf {
 	# Looks up a help file from ~/wtfs
-	wtf_file=`_get_wtf_file`
+	wtf_file=$(_get_wtf_file)
 	if [[ $? = 0 ]]; then
 		wtf_text=`tail -n +5 $wtf_file`  # Omit the text in the first few lines
 		echo "$wtf_text"
